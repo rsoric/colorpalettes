@@ -27,19 +27,40 @@ body{
     margin-right:10px;
 }
 
+#icon img{
+    width:125px;
+    padding-right:25px;
+}
+
+#header{
+    display:flex;
+    flex-direction: row;
+}
 
 
 
   </style>
     <script src="https://d3js.org/d3.v3.min.js"></script>
-  </head>
+<title>Color palettes on early computer systems</title>
+<link rel="shortcut icon" type="image/png" href="img/icon.png"/>  
+</head>
+  
   <body>
+      <div id="header">
 
-     <div>
-         <h1>Color palettes on early computer systems</h1>
-         <h4>Robert Sorić • robert.soric@gmail.com • DRD</h4>
-     </div>
+        <div id="icon">
+            <img src="img/icon.png">
+        </div>
 
+        <div id="titletext">
+            <h1>Color palettes on early computer systems</h1>
+            <h4>Robert Sorić • robert.soric@gmail.com • DRD</h4>
+        </div>
+   
+
+      </div>
+
+     
   
 
   <div id="data_vis">
@@ -73,19 +94,15 @@ body{
             h = 0;
             if (delta == 0)
             h = 0;
-        // Red is max
         else if (cmax == r)
             h = ((g - b) / delta) % 6;
-        // Green is max
         else if (cmax == g)
             h = (b - r) / delta + 2;
-        // Blue is max
         else
             h = (r - g) / delta + 4;
     
         h = Math.round(h * 60);
             
-        // Make negative hues positive behind 360°
         if (h < 0)
             h += 360;
     
@@ -246,12 +263,30 @@ body{
 </div>
 
 <div id="names">
-    <p>Teletext</p>
-    <p>Apple II</p>
-    <p>IBM-PC</p>
-    <p>Commodore VIC-20</p>
-    <p>Commodore 64</p>
-    <p>ZX Spectrum</p>
+    <div>
+        <p>Teletext</p>
+        <p>1976</p>
+    </div>
+    <div>
+        <p>Apple II</p>
+        <p>1977</p>
+    </div>
+    <div>
+        <p>IBM-PC</p>
+        <p>1981</p>
+    </div>
+    <div>
+        <p>Commodore VIC-20</p>
+        <p>1981</p>
+    </div>
+    <div>
+        <p>Commodore 64</p>
+        <p>1982</p>
+    </div>
+    <div>
+        <p>ZX Spectrum</p>
+        <p>1982</p>
+    </div>
 
 </div>
   </body>
