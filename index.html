@@ -12,7 +12,9 @@ body{
           width:99%;
           display: flex;
           flex-direction: row;
-          justify-content: baseline;
+          justify-content: center;
+          margin-top:10px;
+
       }
 
 #names{
@@ -35,6 +37,13 @@ body{
 #header{
     display:flex;
     flex-direction: row;
+    justify-content:center;
+}
+
+#select{
+    display:flex;
+    flex-direction: row;
+    justify-content:center;
 }
 
 
@@ -61,7 +70,18 @@ body{
       </div>
 
      
-  
+  <div id ="select">
+    <label for="systems">Select a computer system: </label>
+
+    <select name="systems" id="systems" onchange="loadPalette()">
+    <option value="" selected disabled hidden> - </option>
+      <option value="teletext">Teletext</option>
+      <option value="appleii">Apple II</option>
+      <option value="ibmpc">IBM PC</option>
+      <option value="commodore64">Commodore 64</option>
+      <option value="zxspectrum">ZX Spectrum</option>
+    </select>
+  </div>
 
   <div id="data_vis">
     
@@ -69,6 +89,9 @@ body{
 
   
   <script>
+
+
+
 
     function sortColors(colors)
     {
@@ -114,8 +137,8 @@ body{
     
     var svg = d3.select("#data_vis")
         .append("svg")
-        .attr("width",1114)
-        .attr("height","650");
+        .attr("width",945)
+        .attr("height",600);
     
     let teletextColors = [
         "0000ff",
@@ -204,11 +227,100 @@ body{
     ]
     
     
-    
+    let imageDisplayed=false;
     
     margin = 10;
     
     let blockWidth = 1014/colorPalettes.length;
+
+    let selectedPalette = 0;
+    let selectedImageURL ="";
+
+
+    function loadPalette() {
+        
+
+        let selectedPaletteName = document.getElementById("systems").value;
+
+        if(selectedPaletteName == "teletext")
+        {
+            selectedPalette = teletextColors;
+            selectedImageURL = "img/0.png";
+        }
+
+        else if(selectedPaletteName == "appleii")
+        {
+            selectedPalette = appleColors;
+            selectedImageURL = "img/1.png";
+        }
+
+        else if(selectedPaletteName == "ibmpc")
+        {
+            selectedPalette = ibmColors;
+            selectedImageURL = "img/2.png";
+        }
+
+        else if(selectedPaletteName == "commodore64")
+        {
+            selectedPalette = commodore64Colors;
+            selectedImageURL = "img/4.png";
+        }
+
+        else if(selectedPaletteName == "zxspectrum")
+        {
+            selectedPalette = zxSpectrumColors;
+            selectedImageURL = "img/5.png";
+        }
+
+        if(!imageDisplayed)
+        {
+            let myimage = svg.append('image').attr('xlink:href', selectedImageURL)
+            .attr('width', 169)
+            .attr('height', 227)
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('class','parrotIMG').style("opacity", 0);
+
+            myimage.transition().duration(2000).style("opacity", 1)
+            imageDisplayed = true;
+
+        }
+
+        else
+        {
+
+            let myimageNew = svg.append('image').attr('xlink:href', selectedImageURL)
+            .attr('width', 169)
+            .attr('height', 227)
+            .attr('x', 0)
+            .attr('y', 0)
+            .attr('class','parrotIMG').style("opacity", 0);
+
+            myimageNew.transition().duration(2000).style("opacity", 1)
+
+            setTimeout(() => {  
+
+                let elements = document.getElementsByClassName('parrotIMG');
+                
+                while(elements.length > 1){
+                    elements[0].parentNode.removeChild(elements[0]);
+                }
+
+             }, 2005);
+
+
+
+
+
+        }
+        
+
+
+
+
+    }
+
+    /*
     for (colorPalette in colorPalettes)
     {
         sortColors(colorPalettes[colorPalette]);
@@ -248,6 +360,7 @@ body{
     
     
     }
+    */
     
     
     
@@ -258,6 +371,7 @@ body{
     
       </script>
 
+<!--
 <div id="colorinfo">
     <h3>Color:</h3>
     <h4 id="currentcolor">&nbsp;</h4>
@@ -292,6 +406,7 @@ body{
         <p>ZX Spectrum</p>
         <p>1982</p>
     </div>
+-->
 
 </div>
   </body>
