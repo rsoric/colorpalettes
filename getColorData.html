@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+  <style>
+
+body{
+    font-family:'Lucida Console', monospace;
+    background-color: darkgray;
+}
+#data_vis{
+          width:99%;
+          display: flex;
+          flex-direction: row;
+          justify-content: center;
+          margin-top:10px;
+
+      }
+
+#names{
+    display:flex;
+    flex-direction: row;
+    width:1100px;
+    text-align: center;
+}
+
+#names p{
+    width: 169px;
+    margin-right:10px;
+}
+
+#icon img{
+    width:125px;
+    padding-right:25px;
+}
+
+#header{
+    display:flex;
+    flex-direction: row;
+    justify-content:center;
+}
+
+#select{
+    display:flex;
+    flex-direction: row;
+    justify-content:center;
+}
+#secondaryCanvas{
+    
+}
+
+
+
+  </style>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+<title>Color palettes on early computer systems</title>
+<link rel="shortcut icon" type="image/png" href="img/icon.png"/>  
+</head>
+  
+  <body>
+      <div id="header">
+
+        <div id="icon">
+            <img src="img/icon.png">
+        </div>
+
+        <div id="titletext">
+            <h1>Color palettes on early computer systems</h1>
+            <h4>Robert Sorić • robert.soric@gmail.com • DRD • Made with D3.js</h4>
+        </div>
+   
+
+      </div>
+
+     
+
+  <canvas id="canvas" width="300" height="300" style="border:1px solid #000000;">
+   </canvas>
+
+  <div id="data_vis">
+    
+
+
+  
+  <script>
+
+function componentToHex(c) {
+  var hex = c.toString(16);
+  return hex.length == 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+let colorData = {};
+let pixelNum = 0;
+
+let myJSON;
+
+var img = new Image();
+img.crossOrigin = 'anonymous';
+img.src = 'img/1.png';
+var canvas = document.getElementById('canvas');
+var ctx = canvas.getContext('2d');
+img.onload = function() {
+  ctx.drawImage(img, 0, 0);
+  img.style.display = 'none';
+
+  var startx = 0,
+    starty = 0,
+    endx = 168,
+    endy = 226;
+
+
+  for (; startx <= endx; startx++) {
+    for (starty = 0; starty <= endy; starty++) {
+
+        var pixel = ctx.getImageData(startx, starty, 1, 1);
+        var hex = rgbToHex(pixel.data[0], pixel.data[1], pixel.data[2]);
+
+
+        if(!colorData.hasOwnProperty(hex))
+        {
+            
+            colorData[hex]=1;
+        }
+        else{
+            colorData[hex] = colorData[hex]+1;
+        }
+
+        pixelNum = pixelNum + 1;
+
+        
+    }
+}
+
+
+
+};
+
+var json = JSON.stringify(colorData);
+
+function pick(event) {
+  var x = event.layerX;
+  var y = event.layerY;
+  var pixel = ctx.getImageData(x, y, 1, 1);
+  var data = pixel.data;
+
+    const rgba = `rgba(${data[0]}, ${data[1]}, ${data[2]}, ${data[3] / 255})`;
+
+    return rgba;
+}
+
+canvas.addEventListener('click', function(event) {
+    console.log(pick(event));
+});
+
+function download(content, fileName, contentType) {
+    var a = document.createElement("a");
+    var file = new Blob([content], {type: contentType});
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+}
+
+download(json, 'json.txt', 'text/plain');
+
+    
+    
+      </script>
+
+
+
+</div>
+  </body>

@@ -45,6 +45,9 @@ body{
     flex-direction: row;
     justify-content:center;
 }
+#secondaryCanvas{
+    
+}
 
 
 
@@ -83,6 +86,9 @@ body{
     </select>
   </div>
 
+  <canvas id="secondaryCanvas" width="300" height="300" style="border:1px solid #000000;">
+   </canvas>
+
   <div id="data_vis">
     
 
@@ -100,6 +106,7 @@ body{
         });
     
     }
+
     
     function hexToHue(color)
     {
@@ -133,7 +140,48 @@ body{
     
     
     }
-    
+
+    let pixels = [];
+
+    function getPixel(url, x, y) {
+    var img = new Image();
+    img.src = url;
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+    context.drawImage(img, 0, 0);
+    img.style.display = 'none';
+    return context.getImageData(x, y, 1, 1).data;
+    }
+
+    function getPixelColorDataFromImage(url)
+    {
+        var img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.src = url;
+        var canvas = document.getElementById('secondaryCanvas');
+        var ctx = canvas.getContext('2d');
+        img.onload = function() {
+        ctx.drawImage(img, 0, 0);
+
+        pixels = [];
+
+        var startx = 0,
+            starty = 0,
+            endx = 169,
+            endy = 227;
+
+            for (; startx <= endx; startx++) {
+                for (starty = 0; starty <= endy; starty++) {
+                    var pixel = ctx.getImageData(starty, endy, 1, 1);
+                    console.log(pixel.data);
+                }
+            }
+
+        };
+
+        
+    }
+        
     
     var svg = d3.select("#data_vis")
         .append("svg")
@@ -281,8 +329,20 @@ body{
             .attr('y', 0)
             .attr('class','parrotIMG').style("opacity", 0);
 
+            document.getElementById("systems").disabled = true;
+
             myimage.transition().duration(2000).style("opacity", 1)
             imageDisplayed = true;
+
+            
+
+            setTimeout(() => {  
+
+
+                document.getElementById("systems").disabled = false;
+            
+
+            }, 2005);
 
         }
 
@@ -296,6 +356,8 @@ body{
             .attr('y', 0)
             .attr('class','parrotIMG').style("opacity", 0);
 
+            document.getElementById("systems").disabled = true;
+
             myimageNew.transition().duration(2000).style("opacity", 1)
 
             setTimeout(() => {  
@@ -304,21 +366,23 @@ body{
                 
                 while(elements.length > 1){
                     elements[0].parentNode.removeChild(elements[0]);
+                    document.getElementById("systems").disabled = false;
                 }
 
              }, 2005);
 
-
-
-
-
         }
-        
+
+    //Read pixels from image
+    
+    
 
 
 
 
     }
+
+    getPixelColorDataFromImage(selectedImageURL);
 
     /*
     for (colorPalette in colorPalettes)
