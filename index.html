@@ -13,7 +13,7 @@ body{
           display: flex;
           flex-direction: row;
           justify-content: center;
-          margin-top:10px;
+          margin-top:22px;
 
       }
 
@@ -52,7 +52,7 @@ body{
 
 
   </style>
-    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v4.js"></script>
 <title>Color palettes on early computer systems</title>
 <link rel="shortcut icon" type="image/png" href="img/icon.png"/>  
 </head>
@@ -85,9 +85,6 @@ body{
       <option value="zxspectrum">ZX Spectrum</option>
     </select>
   </div>
-
-  <canvas id="secondaryCanvas" width="300" height="300" style="border:1px solid #000000;">
-   </canvas>
 
   <div id="data_vis">
     
@@ -140,64 +137,27 @@ body{
     
     
     }
-
-    let pixels = [];
-
-    function getPixel(url, x, y) {
-    var img = new Image();
-    img.src = url;
-    var canvas = document.createElement('canvas');
-    var context = canvas.getContext('2d');
-    context.drawImage(img, 0, 0);
-    img.style.display = 'none';
-    return context.getImageData(x, y, 1, 1).data;
-    }
-
-    function getPixelColorDataFromImage(url)
-    {
-        var img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.src = url;
-        var canvas = document.getElementById('secondaryCanvas');
-        var ctx = canvas.getContext('2d');
-        img.onload = function() {
-        ctx.drawImage(img, 0, 0);
-
-        pixels = [];
-
-        var startx = 0,
-            starty = 0,
-            endx = 169,
-            endy = 227;
-
-            for (; startx <= endx; startx++) {
-                for (starty = 0; starty <= endy; starty++) {
-                    var pixel = ctx.getImageData(starty, endy, 1, 1);
-                    console.log(pixel.data);
-                }
-            }
-
-        };
-
-        
-    }
         
     
     var svg = d3.select("#data_vis")
         .append("svg")
         .attr("width",945)
         .attr("height",600);
+
     
     let teletextColors = [
+        "000000",
         "0000ff",
         "ff0000",
         "ff00ff",
         "00ff00",
         "00ffff",
-        "ffff00"
+        "ffff00",
+        "ffffff"
     ]
     
     let appleColors = [
+        "000000",
         "6c2940",
         "403578",
         "d93cf0",
@@ -210,29 +170,22 @@ body{
         "eca8bf",
         "26c30f",
         "bfca87",
-        "93d6bf"
+        "93d6bf",
+        "ffffff"
     
     ]
     
-    let commodoreColors = [   
-        "eab489",
-        "b86962",
-        "782922",
-        "87d6dd",
-        "aa5fb6",
-        "1a8226",
-        "40318d",
-        "bfce72"
-    ]
     
     let ibmColors = [ 
+    "000000",
         "55ff55",
         "ff5555",
         "ffff55"
     ]
     
     let commodore64Colors = [
-        "883932",
+    "000000",    
+    "883932",
         "67b6bd",
         "8b3f96",
         "55a049",
@@ -245,11 +198,13 @@ body{
         "787878",
         "94e089",
         "7869c4",
-        "9f9f9f"
+        "9f9f9f",
+        "ffffff"
     
     ]
     
     let zxSpectrumColors = [
+        "000000",
         "0000c0",
         "c00000",
         "c000c0",
@@ -261,7 +216,8 @@ body{
         "ff00ff",
         "00ff00",
         "00ffff",
-        "ffff00"
+        "ffff00",
+        "ffffff"
     
     ]
     
@@ -269,7 +225,6 @@ body{
         teletextColors,
         appleColors,
         ibmColors,
-        commodoreColors,
         commodore64Colors,
         zxSpectrumColors
     ]
@@ -281,11 +236,16 @@ body{
     
     let blockWidth = 1014/colorPalettes.length;
 
-    let selectedPalette = 0;
+    let selectedPalette = {};
     let selectedImageURL ="";
+
+    
 
 
     function loadPalette() {
+
+        
+    
         
 
         let selectedPaletteName = document.getElementById("systems").value;
@@ -293,38 +253,43 @@ body{
         if(selectedPaletteName == "teletext")
         {
             selectedPalette = teletextColors;
-            selectedImageURL = "img/0.png";
+            selectedImageURL = "img/teletext.png";
+            colorDataURL = "colorData/teletext.csv";
         }
 
         else if(selectedPaletteName == "appleii")
         {
             selectedPalette = appleColors;
-            selectedImageURL = "img/1.png";
+            selectedImageURL = "img/appleii.png";
+            colorDataURL = "colorData/appleii.csv";
         }
 
         else if(selectedPaletteName == "ibmpc")
         {
             selectedPalette = ibmColors;
-            selectedImageURL = "img/2.png";
+            selectedImageURL = "img/ibm.png";
+            colorDataURL = "colorData/ibm.csv";
         }
 
         else if(selectedPaletteName == "commodore64")
         {
             selectedPalette = commodore64Colors;
-            selectedImageURL = "img/4.png";
+            selectedImageURL = "img/c64.png";
+            colorDataURL = "colorData/c64.csv";
         }
 
         else if(selectedPaletteName == "zxspectrum")
         {
             selectedPalette = zxSpectrumColors;
-            selectedImageURL = "img/5.png";
+            selectedImageURL = "img/zxspectrum.png";
+            colorDataURL = "colorData/zxspectrum.csv";
         }
 
         if(!imageDisplayed)
         {
             let myimage = svg.append('image').attr('xlink:href', selectedImageURL)
-            .attr('width', 169)
-            .attr('height', 227)
+            .attr('width', 300)
+            .attr('height', 300)
             .attr('x', 0)
             .attr('y', 0)
             .attr('class','parrotIMG').style("opacity", 0);
@@ -336,9 +301,9 @@ body{
 
             
 
-            setTimeout(() => {  
-
-
+            setTimeout(() => {
+                
+                
                 document.getElementById("systems").disabled = false;
             
 
@@ -348,32 +313,102 @@ body{
 
         else
         {
+            
 
             let myimageNew = svg.append('image').attr('xlink:href', selectedImageURL)
-            .attr('width', 169)
-            .attr('height', 227)
+            .attr('width', 300)
+            .attr('height', 300)
             .attr('x', 0)
             .attr('y', 0)
-            .attr('class','parrotIMG').style("opacity", 0);
+            .attr('class','parrotIMG').style("opacity", 0).transition().duration(2000).style("opacity", 1)
 
             document.getElementById("systems").disabled = true;
 
-            myimageNew.transition().duration(2000).style("opacity", 1)
+            d3.selectAll('.treemap').transition().duration(2000).style("opacity", 1);
+
+            d3.selectAll(".delete").remove();
+
 
             setTimeout(() => {  
 
                 let elements = document.getElementsByClassName('parrotIMG');
-                
+
                 while(elements.length > 1){
                     elements[0].parentNode.removeChild(elements[0]);
                     document.getElementById("systems").disabled = false;
+                                   
+
+                    
+                    
                 }
+                
 
              }, 2005);
 
+             
+
         }
 
-    //Read pixels from image
+    
+    var margin = {top: 0, right: 0, bottom: 0, left: 0},
+    width = 945-300 - margin.left - margin.right,
+    height = 300 - margin.top - margin.bottom;
+
+    
+    
+
+    // Read data
+    d3.csv(colorDataURL, function(data) {
+
+    // stratify the data: reformatting for d3.js
+    var root = d3.stratify()
+        .id(function(d) { return d.name; })   // Name of the entity (column name is name in csv)
+        .parentId(function(d) { return d.parent; })   // Name of the parent (column name is parent in csv)
+        (data);
+    root.sum(function(d) { return +d.value })   // Compute the numeric value for each entity
+
+    // Then d3.treemap computes the position of each element of the hierarchy
+    // The coordinates are added to the root object above
+    d3.treemap()
+        .size([width, height])
+        .padding(0)
+        (root)
+
+    console.log(root.leaves())
+    // use this information to add rectangles:
+
+    svg.selectAll("rect").attr('class','delete').transition().duration(2000).style('opacity',0);
+
+    svg
+        .selectAll("svg")
+        .data(root.leaves())
+        .enter()
+        .append("rect")
+        .attr('x', function (d) { return d.x0+300; })
+        .attr('y', function (d) { return d.y0; })
+        .attr('width', function (d) { return d.x1 - d.x0; })
+        .attr('height', function (d) { return d.y1 - d.y0; })
+        .style("stroke", "gray")
+        .style('opacity',0)
+        .attr('class','treemap')
+        .style("fill",function(d){ return d.data.name}).transition().duration(2000).style('opacity',1);
+    
+    
+
+    // and to add the text labels
+    /*svg
+        .selectAll("text")
+        .data(root.leaves())
+        .enter()
+        .append("text")
+        .attr("x", function(d){ return d.x0+10+300})    // +10 to adjust position (more right)
+        .attr("y", function(d){ return d.y0+20})    // +20 to adjust position (lower)
+        .text(function(d){ return d.data.name})
+        .attr("font-size", "15px")
+        .attr("fill", "white")*/
+    })
+
+
     
     
 
@@ -381,8 +416,6 @@ body{
 
 
     }
-
-    getPixelColorDataFromImage(selectedImageURL);
 
     /*
     for (colorPalette in colorPalettes)
