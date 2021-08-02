@@ -53,7 +53,7 @@ body{
 
   </style>
     <script src="https://d3js.org/d3.v4.js"></script>
-<title>Color palettes on early computer systems</title>
+<title>Color palettes of early computer systems</title>
 <link rel="shortcut icon" type="image/png" href="img/icon.png"/>  
 </head>
   
@@ -74,7 +74,7 @@ body{
 
      
   <div id ="select">
-    <label for="systems">Select a computer system: </label>
+    <label for="systems">Select a computer system:  </label>
 
     <select name="systems" id="systems" onchange="loadPalette()">
     <option value="" selected disabled hidden> - </option>
@@ -142,7 +142,7 @@ body{
     var svg = d3.select("#data_vis")
         .append("svg")
         .attr("width",945)
-        .attr("height",600);
+        .attr("height",900);
 
     
     let teletextColors = [
@@ -291,7 +291,7 @@ body{
             .attr('width', 300)
             .attr('height', 300)
             .attr('x', 0)
-            .attr('y', 0)
+            .attr('y', 25)
             .attr('class','parrotIMG').style("opacity", 0);
 
             document.getElementById("systems").disabled = true;
@@ -309,6 +309,28 @@ body{
 
             }, 2005);
 
+            
+
+            var photoLabel =  svg.append("text")
+            .attr("y", 21)//magic number here
+            .attr("x", 945/2)
+            .attr('text-anchor', 'middle')
+            .attr("class", "myLabel")//easy to style with CSS
+            .text("Sample image with treemap of colors")
+            .attr('opacity',0)
+            .transition().duration(2000).attr('opacity',1);
+
+            var photoLabel =  svg.append("text")
+            .attr("y", 600)//magic number here
+            .attr("x", 945/2)
+            .attr('text-anchor', 'middle')
+            .attr("class", "myLabel")//easy to style with CSS
+            .text("Color palette")
+            .attr('opacity',0)
+            .transition().duration(2000).attr('opacity',1);
+
+            
+
         }
 
         else
@@ -319,7 +341,7 @@ body{
             .attr('width', 300)
             .attr('height', 300)
             .attr('x', 0)
-            .attr('y', 0)
+            .attr('y', 25)
             .attr('class','parrotIMG').style("opacity", 0).transition().duration(2000).style("opacity", 1)
 
             document.getElementById("systems").disabled = true;
@@ -355,6 +377,8 @@ body{
     height = 300 - margin.top - margin.bottom;
 
     
+
+    
     
 
     // Read data
@@ -377,7 +401,7 @@ body{
     console.log(root.leaves())
     // use this information to add rectangles:
 
-    svg.selectAll("rect").attr('class','delete').transition().duration(2000).style('opacity',0);
+    svg.selectAll("rect .treemap").attr('class','delete').transition().duration(2000).style('opacity',0);
 
     svg
         .selectAll("svg")
@@ -385,7 +409,7 @@ body{
         .enter()
         .append("rect")
         .attr('x', function (d) { return d.x0+300; })
-        .attr('y', function (d) { return d.y0; })
+        .attr('y', function (d) { return d.y0+25; })
         .attr('width', function (d) { return d.x1 - d.x0; })
         .attr('height', function (d) { return d.y1 - d.y0; })
         .style("stroke", "gray")
@@ -408,57 +432,46 @@ body{
         .attr("fill", "white")*/
     })
 
+    sortColors(selectedPalette);
 
     
     
-
-
-
-
-    }
-
-    /*
-    for (colorPalette in colorPalettes)
-    {
-        sortColors(colorPalettes[colorPalette]);
-    
-        let blockHeight = 400/colorPalettes[colorPalette].length;
-        let currentX = blockWidth * colorPalette + margin*colorPalette;
-        let currentY = 0;
+        let blockHeight = 250;
+        let blockWidth = 945/selectedPalette.length;
+        let currentX = 0;
+        let currentY = 300+25;
         
         
     
-            for (color in colorPalettes[colorPalette])
+            for (color in selectedPalette)
         {
-            var myimage = svg.append('image')
-            .attr('xlink:href', 'img/'+colorPalette+'.png')
-            .attr('width', 169)
-            .attr('height', 227)
-            .attr('x', currentX)
-            .attr('y', 0);
+            
+            if(selectedPalette[color]=="ffffff"){
+                selectedPalette.splice(color,1);
+                selectedPalette.push("ffffff");
+            }
             
             svg.append("rect")
-            .attr("x",currentX)
-            .attr("y",(blockHeight*color)+227+10)
+            .attr("x",(blockWidth*color))
+            .attr("y",currentY)
             .attr("width",blockWidth)
             .attr("height",blockHeight)
-            .attr("style", "fill:#"+colorPalettes[colorPalette][color]+";")
-            .on("mouseover", function(d) {				
-                d3.select("#currentcolor").text(this.style.getPropertyValue("fill"));
-                d3.select("#colordisplay").style('fill',this.style.getPropertyValue("fill"));	
-                })					
-            .on("mouseout", function(d) {		
-                d3.select("#currentcolor").text('\u00A0');
-                d3.select("#colordisplay").style('fill','lightgray');
-            });;
+            .attr("style", "fill:#"+selectedPalette[color]+";")
+            .attr("class",'blocks')
+            .attr('opacity',0)
+            .transition().duration(2000).attr('opacity',1);
         }
+
+
     
-      
-    
-    
+
+
     }
-    */
+
     
+
+    
+
     
     
     
