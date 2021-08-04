@@ -292,6 +292,12 @@ body{
             .attr('height', 300)
             .attr('x', 0)
             .attr('y', 25)
+            .on('mouseover', function () {
+                d3.select(this).attr("xlink:href", "img/parrot.png");
+            })
+            .on('mouseout', function () {
+                d3.select(this).attr("xlink:href", selectedImageURL);
+            })
             .attr('class','parrotIMG').style("opacity", 0);
 
             document.getElementById("systems").disabled = true;
@@ -329,6 +335,33 @@ body{
             .attr('opacity',0)
             .transition().duration(2000).attr('opacity',1);
 
+            var colorpickerLabel =  svg.append("text")
+            .attr("y", 635)//magic number here
+            .attr("x", 0)
+            .attr('text-anchor', 'left')
+            .attr("class", "myLabel")//easy to style with CSS
+            .text("Selected color:")
+            .attr('opacity',0)
+            .transition().duration(2000).attr('opacity',1);
+
+            var colorpickerValue =  svg.append("text")
+            .attr("y", 660)//magic number here
+            .attr("x", 0)
+            .attr('text-anchor', 'left')
+            .attr("class", "colorpickerValue")//easy to style with CSS
+            .text("")
+            .attr('opacity',0)
+            .transition().duration(2000).attr('opacity',1);
+
+            var colorblock =  svg.append("rect")
+            .attr("y", 620)//magic number here
+            .attr("x", 200)
+            .attr('width', 900)
+            .attr('height', 80)
+            .attr("class", "colorpickerblock")//easy to style with CSS
+            .attr("style", "fill:darkgray")
+            .transition().duration(2000).attr('opacity',1);
+
             
 
         }
@@ -342,7 +375,14 @@ body{
             .attr('height', 300)
             .attr('x', 0)
             .attr('y', 25)
-            .attr('class','parrotIMG').style("opacity", 0).transition().duration(2000).style("opacity", 1)
+            .on('mouseover', function () {
+                d3.select(this).attr("xlink:href", "img/parrot.png");
+            })
+            .on('mouseout', function () {
+                d3.select(this).attr("xlink:href", selectedImageURL);
+            })
+
+            .attr('class','parrotIMG').style("opacity", 0).transition().duration(2000).style("opacity", 1);
 
             document.getElementById("systems").disabled = true;
 
@@ -415,6 +455,14 @@ body{
         .style("stroke", "gray")
         .style('opacity',0)
         .attr('class','treemap')
+        .on('mouseover', function (d, i) {
+          d3.select('.colorpickerValue').text(d.data.name);
+          d3.select('.colorpickerblock').attr("style", "fill:"+d.data.name);
+        })
+        .on('mouseout', function (d, i) {
+          d3.select('.colorpickerValue').text("");
+          d3.select('.colorpickerblock').attr("style", "fill:darkgray");
+        })
         .style("fill",function(d){ return d.data.name}).transition().duration(2000).style('opacity',1);
     
     
@@ -445,6 +493,7 @@ body{
     
             for (color in selectedPalette)
         {
+            let currentColor = selectedPalette[color];
             
             if(selectedPalette[color]=="ffffff"){
                 selectedPalette.splice(color,1);
@@ -459,6 +508,15 @@ body{
             .attr("style", "fill:#"+selectedPalette[color]+";")
             .attr("class",'blocks')
             .attr('opacity',0)
+            .on('mouseover', function (d, i) {
+          d3.select('.colorpickerValue').text("#"+currentColor);
+          d3.select('.colorpickerblock').attr("style", "fill:#"+currentColor);
+        })
+        .on('mouseout', function (d, i) {
+          d3.select('.colorpickerValue').text("");
+          d3.select('.colorpickerblock').attr("style", "fill:darkgray");
+        })
+            
             .transition().duration(2000).attr('opacity',1);
         }
 
